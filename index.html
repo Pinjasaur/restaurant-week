@@ -44,8 +44,12 @@
   {{#restaurants}}
   <section>
     <h2>{{title}}</h2>
-    <small><a href="https://www.openstreetmap.org/#map=16/{{lat}}/{{lng}}" target="_blank" rel="noopener noreferrer">({{lat}}, {{lng}})</a></small>
+    <p><small><a href="https://www.openstreetmap.org/#map=16/{{lat}}/{{lng}}" target="_blank" rel="noopener noreferrer">({{lat}}, {{lng}})</a></small></p>
     <article>{{{html}}}</article>
+    <details>
+      <summary>Open menu</summary>
+      <p>{{{menu}}}</p>
+    </details>
   </section>
   {{/restaurants}}
 </script>
