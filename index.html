@@ -41,6 +41,15 @@
   <p><small>Bone apple teeth.</small></p>
 </footer>
 <script id="template" type="text/template">
+  {{#index.length}}
+  <h2>Index</h2>
+  <ul>
+    {{#index}}
+    <li>{{title}}</li>
+    {{/index}}
+  </ul>
+  {{/index.length}}
+
   {{#restaurants}}
   <section>
     <h2>{{title}}</h2>

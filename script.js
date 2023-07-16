@@ -86,5 +86,5 @@ function formatMenuHTML($html) {
   const api = await getAPI().catch(handleError)
   const restaurants = await getRestaurants(api + '?page=1').catch(handleError)
   console.log(api, restaurants)
-  $app.innerHTML = Mustache.render($template.innerHTML, { restaurants: await formatRestaurants(restaurants).catch(handleError) })
+  $app.innerHTML = Mustache.render($template.innerHTML, { index: restaurants.map(r => { return { title: r.title } }),restaurants: await formatRestaurants(restaurants).catch(handleError) })
 })();
