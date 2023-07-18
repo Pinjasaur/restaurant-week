@@ -10,7 +10,7 @@
 <body>
   <header>
     <h1>Minneapolis / St. Paul Restaurant Week</h1>
-    <p>All the restaurants. No bullshit.</p>
+    <p>All the restaurants. That&rsquo;s it.</p>
   </header>
   <main id="app">
     <div style="text-align: center;">
@@ -45,17 +45,17 @@
   <h2>Index</h2>
   <ul>
     {{#index}}
-    <li>{{title}}</li>
+    <li><a href="#{{slug}}">{{title}}</a> (<a href="#{{slug}}:menu">Menu</a>)</li>
     {{/index}}
   </ul>
   {{/index.length}}
 
   {{#restaurants}}
-  <section>
+  <section id="{{slug}}">
     <h2>{{title}}</h2>
     <p><small><a href="https://www.openstreetmap.org/?mlat={{lat}}&mlon={{lng}}#map=16/{{lat}}/{{lng}}" target="_blank" rel="noopener noreferrer">({{lat}}, {{lng}})</a></small></p>
     <article>{{{html}}}</article>
-    <details>
+    <details id="{{slug}}:menu">
       <summary>Open menu</summary>
       <p>{{{menu}}}</p>
     </details>

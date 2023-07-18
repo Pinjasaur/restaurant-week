@@ -44,7 +44,8 @@ async function formatRestaurants(restaurants) {
     return {
       ...restaurant,
       html,
-      menu
+      menu,
+      slug: slugify(restaurant.title)
     }
   }))
 }
@@ -66,11 +67,13 @@ function formatRestaurantHTML($html) {
   $html.querySelectorAll('.info a').forEach($a => {
     $a.classList.add('button')
   })
-  const menu = Array.from($html.querySelectorAll('a')).find($a => $a.textContent.toLowerCase().trim() === 'menu').href
-  return [$html.querySelector('li').innerHTML, menu]
+  const menu = Array.from($html.querySelectorAll('a')).find($a => $a.textContent.toLowerCase().trim() === 'menu')
+  return [$html.querySelector('li').innerHTML, menu !== undefined ? menu.href : null]
 }
 
 async function getMenu(api) {
+  if (api === null)
+    return Promise.resolve(`Found no menu, is restaurant week over? Check directly: <a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`)
   const res = await fetch(proxy + api)
   const html = await res.text()
   const parser = new DOMParser()
@@ -82,9 +85,27 @@ function formatMenuHTML($html) {
   return $html.querySelector('.content').innerHTML
 }
 
+// Thanks CodePen:
+// https://blog.codepen.io/2016/11/17/anchor-links-post-headers/
+function slugify(text) {
+  return text.toString().toLowerCase().trim()
+    .replace(/\s+/g, '-')     // Replace spaces with -
+    .replace(/&/g, '-and-')   // Replace & with 'and'
+    .replace(/[^\w\-]+/g, '') // Remove all non-word chars
+    .replace(/\-\-+/g, '-');  // Replace multiple - with single -
+}
+
 (async () => {
   const api = await getAPI().catch(handleError)
   const restaurants = await getRestaurants(api + '?page=1').catch(handleError)
   console.log(api, restaurants)
-  $app.innerHTML = Mustache.render($template.innerHTML, { index: restaurants.map(r => { return { title: r.title } }),restaurants: await formatRestaurants(restaurants).catch(handleError) })
+  $app.innerHTML = Mustache.render($template.innerHTML, {
+    index: restaurants.map(r => {
+      return {
+        title: r.title,
+        slug: slugify(r.title)
+      }
+    }),
+    restaurants: await formatRestaurants(restaurants).catch(handleError)
+  })
 })();
