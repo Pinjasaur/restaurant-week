@@ -20,8 +20,8 @@ async function getAPI() {
     const $scripts = Array.from($dom.querySelectorAll('script'))
     const $script = $scripts.filter($script => $script.innerHTML.trim().startsWith('var _mp_require = {')).pop()
     const json = JSON.parse($script.innerHTML.trim().replace(/^var _mp_require =/, '').replace(/;$/, ''))
-    return {
-      api: Promise.resolve(json['config']['js/page_roundup_location']['locations_url'].replace(/^https:\/\/mspmag.com\//, '')),
+    return Promise.resolve({
+      api: json['config']['js/page_roundup_location']['locations_url'].replace(/^https:\/\/mspmag.com\//, ''),
       header: {
         title: $title.innerHTML,
         img: {
@@ -29,7 +29,7 @@ async function getAPI() {
           alt: $img.alt
         }
       }
-    }
+    })
   } catch (e) {
     throw e
   }
