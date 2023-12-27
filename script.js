@@ -1,6 +1,6 @@
 // const url = 'https://corsproxy.io/?' + encodeURIComponent('https://mspmag.com/promotions/restaurantweek')
 const proxy = '/proxy/mspmag.com/'
-const url = 'promotions/restaurantweek/restaurant-week-2023/'
+const url = 'https://mspmag.com/promotions/restaurantweek/restaurant-week-2023/'.replace(/^https:\/\/mspmag.com\//, '')
 const $app = document.getElementById('app')
 const $template = document.getElementById('template')
 
@@ -17,7 +17,7 @@ async function getAPI() {
     const $scripts = Array.from($dom.querySelectorAll('script'))
     const $script = $scripts.filter($script => $script.innerHTML.trim().startsWith('var _mp_require = {')).pop()
     const json = JSON.parse($script.innerHTML.trim().replace(/^var _mp_require =/, '').replace(/;$/, ''))
-    return Promise.resolve(json['config']['js/page_roundup_location']['locations_url'])
+    return Promise.resolve(json['config']['js/page_roundup_location']['locations_url'].replace(/^https:\/\/mspmag.com\//, ''))
   } catch (e) {
     throw e
   }
