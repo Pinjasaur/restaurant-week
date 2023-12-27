@@ -25,7 +25,7 @@ async function getAPI() {
       header: {
         title: $title.innerHTML,
         img: {
-          src: $img.src,
+          src: $img.src.replace(/\?.*$/, ''),
           alt: $img.alt
         }
       }
