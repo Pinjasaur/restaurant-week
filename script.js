@@ -1,15 +1,16 @@
 // const url = 'https://corsproxy.io/?' + encodeURIComponent('https://mspmag.com/promotions/restaurantweek')
 const proxy = '/proxy/mspmag.com/'
-const url = 'https://mspmag.com/promotions/restaurantweek/restaurant-week-2023/'.replace(/^https:\/\/mspmag.com\//, '')
+const canonical = 'https://mspmag.com/promotions/restaurantweek/restaurant-week-2023/'
+const url = canonical.replace(/^https:\/\/mspmag.com\//, '')
 const $app = document.getElementById('app')
 const $template = document.getElementById('template')
 
 function handleError() {
-  $app.innerHTML = `<p>Error scraping the API. Try again or visit the direct link: <a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a></p>`
+  $app.innerHTML = `<p>Error scraping the API. Try again or visit the direct link: <a href="${canonical}" target="_blank" rel="noopener noreferrer">${canonical}</a></p>`
 }
 
 async function getAPI() {
-  const res = await fetch(proxy + encodeURIComponent(url))
+  const res = await fetch(proxy + url)
   const html = await res.text()
   try {
     const parser = new DOMParser()
@@ -26,7 +27,7 @@ async function getAPI() {
 async function getRestaurants(api) {
   let data = []
   while (true) {
-    const res = await fetch(proxy + encodeURIComponent(api))
+    const res = await fetch(proxy + api)
     const json = await res.json()
     data = data.concat(json.results)
     if (!json.more) break
@@ -73,7 +74,7 @@ function formatRestaurantHTML($html) {
 
 async function getMenu(api) {
   if (api === null)
-    return Promise.resolve(`Found no menu, is restaurant week over? Check directly: <a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`)
+    return Promise.resolve(`Found no menu, is restaurant week over? Check directly: <a href="${canonical}" target="_blank" rel="noopener noreferrer">${canonical}</a>`)
   const res = await fetch(proxy + api)
   const html = await res.text()
   const parser = new DOMParser()
