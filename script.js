@@ -1,6 +1,6 @@
 // const url = 'https://corsproxy.io/?' + encodeURIComponent('https://mspmag.com/promotions/restaurantweek')
-const proxy = 'https://corsproxy.io/?'
-const url = 'https://mspmag.com/promotions/restaurantweek/restaurant-week-2023/'
+const proxy = '/proxy/mspmag.com/'
+const url = '/promotions/restaurantweek/restaurant-week-2023/'
 const $app = document.getElementById('app')
 const $template = document.getElementById('template')
 
