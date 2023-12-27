@@ -5,8 +5,8 @@ const url = canonical.replace(/^https:\/\/mspmag.com\//, '')
 const $app = document.getElementById('app')
 const $template = document.getElementById('template')
 
-function handleError() {
-  $app.innerHTML = `<p>Error scraping the API. Try again or visit the direct link: <a href="${canonical}" target="_blank" rel="noopener noreferrer">${canonical}</a></p>`
+function handleError(e) {
+  $app.innerHTML = `<p>Error scraping the API: ${e.toString()} <br><br> Try again or visit the direct link: <a href="${canonical}" target="_blank" rel="noopener noreferrer">${canonical}</a></p>`
 }
 
 async function getAPI() {
@@ -15,10 +15,21 @@ async function getAPI() {
   try {
     const parser = new DOMParser()
     const $dom = parser.parseFromString(html, 'text/html')
+    const $title = $dom.querySelector('#title > h1')
+    const $img = $dom.querySelector('.mp-cover-img > figure > img')
     const $scripts = Array.from($dom.querySelectorAll('script'))
     const $script = $scripts.filter($script => $script.innerHTML.trim().startsWith('var _mp_require = {')).pop()
     const json = JSON.parse($script.innerHTML.trim().replace(/^var _mp_require =/, '').replace(/;$/, ''))
-    return Promise.resolve(json['config']['js/page_roundup_location']['locations_url'].replace(/^https:\/\/mspmag.com\//, ''))
+    return {
+      api: Promise.resolve(json['config']['js/page_roundup_location']['locations_url'].replace(/^https:\/\/mspmag.com\//, '')),
+      header: {
+        title: $title.innerHTML,
+        img: {
+          src: $img.src,
+          alt: $img.alt
+        }
+      }
+    }
   } catch (e) {
     throw e
   }
@@ -97,10 +108,11 @@ function slugify(text) {
 }
 
 (async () => {
-  const api = await getAPI().catch(handleError)
+  const {api, header} = await getAPI().catch(handleError)
   const restaurants = await getRestaurants(api + '?page=1').catch(handleError)
   console.log(api, restaurants)
   $app.innerHTML = Mustache.render($template.innerHTML, {
+    header,
     index: restaurants.map(r => {
       return {
         title: r.title,
