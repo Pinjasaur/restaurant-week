@@ -1,6 +1,7 @@
 // const url = 'https://corsproxy.io/?' + encodeURIComponent('https://mspmag.com/promotions/restaurantweek')
 const proxy = '/proxy/mspmag.com/'
-const canonical = `https://mspmag.com/promotions/restaurantweek/restaurant-week-${new Date().getFullYear()}/`
+// const canonical = `https://mspmag.com/promotions/restaurantweek/restaurant-week-${new Date().getFullYear()}/`
+const canonical = `https://mspmag.com/promotions/restaurantweek`
 const url = canonical.replace(/^https:\/\/mspmag.com\//, '')
 const $app = document.getElementById('app')
 const $template = document.getElementById('template')
