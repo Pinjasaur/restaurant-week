@@ -80,7 +80,7 @@ function formatRestaurantHTML($html) {
     $a.classList.add('button')
   })
   const menu = Array.from($html.querySelectorAll('a')).find($a => $a.textContent.toLowerCase().trim() === 'menu')
-  return [$html.querySelector('li').innerHTML, menu !== undefined ? menu.href : null]
+  return [$html.querySelector('li').innerHTML, menu !== undefined ? menu.href.replace(/^https:\/\/mspmag.com\//, '') : null]
 }
 
 async function getMenu(api) {
