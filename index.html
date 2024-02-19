@@ -38,9 +38,15 @@
     </div>
   </main>
 <footer>
+  <p><a href="https://ko-fi.com/X8X23K1V6" target="_blank"><img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="support me on ko-fi"></a></p>
   <p><small>Bone apple teeth.</small></p>
 </footer>
 <script id="template" type="text/template">
+  <details>
+    <summary>Find this useful? Buy me a coffee ☕️</summary>
+    <p><a href="https://ko-fi.com/X8X23K1V6" target="_blank"><img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="support me on ko-fi"></a></p>
+  </details>
+
   <h2>{{header.title}}</h2>
   <figure><img src="{{header.img.src}}" alt="{{header.img.alt}}"></figure>
 
@@ -59,7 +65,7 @@
     <p><small><a href="https://www.openstreetmap.org/?mlat={{lat}}&mlon={{lng}}#map=16/{{lat}}/{{lng}}" target="_blank" rel="noopener noreferrer">({{lat}}, {{lng}})</a></small></p>
     <article>{{{html}}}</article>
     <details id="{{slug}}:menu">
-      <summary>Open menu</summary>
+      <summary>View menu</summary>
       <p>{{{menu}}}</p>
     </details>
     <a href="#goto:top">Go to top &uparrow;</a>
