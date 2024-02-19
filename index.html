@@ -12,6 +12,14 @@
     <h1>Minneapolis / St. Paul Restaurant Week</h1>
     <p>All the restaurants. That&rsquo;s it.</p>
   </header>
+  <section>
+    <details>
+      <summary>Why does this exist?</summary>
+      <p>Hi, I&rsquo;m Paul. I live in Minneapolis and like participating in Restaurant Week. What I didn&rsquo;t like was the questionable UI/UX experience on the canonical mspmag.com website where results were paginated, menus opened in modals, and it was generally difficult to browse &amp; share.</p>
+      <p>So, I made this. It&rsquo;s a simple website that scrapes the same data and displays it in a no-frills fashion.</p>
+      <p><a href="https://ko-fi.com/X8X23K1V6" target="_blank"><img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="support me on ko-fi"></a></p>
+    </details>
+  </section>
   <main id="app">
     <div style="text-align: center;">
       <svg class="loader" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -42,11 +50,6 @@
   <p><small>Bone apple teeth.</small></p>
 </footer>
 <script id="template" type="text/template">
-  <details>
-    <summary>Find this useful? Buy me a coffee ☕️</summary>
-    <p><a href="https://ko-fi.com/X8X23K1V6" target="_blank"><img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="support me on ko-fi"></a></p>
-  </details>
-
   <h2>{{header.title}}</h2>
   <figure><img src="{{header.img.src}}" alt="{{header.img.alt}}"></figure>
 
