@@ -7,3 +7,5 @@ I find the canonical website to be rough in terms of UI & UX: results are pagina
 So, I scrape the same data into a minimal webpage. This is that.
 
 Bone apple teeth, as they say.
+
+[Read more.](https://paul.af/restaurant-week)
