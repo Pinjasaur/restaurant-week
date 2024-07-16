@@ -113,7 +113,7 @@ function slugify(text) {
 (async () => {
   const {api, header} = await getAPI().catch(handleError)
   const restaurants = await getRestaurants(api + '?page=1').catch(handleError)
-  console.log(api, restaurants)
+  isLocal() && console.log(api, restaurants)
   $app.innerHTML = Mustache.render($template.innerHTML, {
     header,
     index: restaurants.map(r => {
