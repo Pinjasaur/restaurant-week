@@ -64,7 +64,7 @@
 
   {{#restaurants}}
   <section id="{{slug}}">
-    <h2>{{title}}</h2>
+    <h2><a href="#{{slug}}">#</a> {{title}}</h2>
     <p><small><a href="https://www.openstreetmap.org/?mlat={{lat}}&mlon={{lng}}#map=16/{{lat}}/{{lng}}" target="_blank" rel="noopener noreferrer">({{lat}}, {{lng}})</a></small></p>
     <article>{{{html}}}</article>
     <details id="{{slug}}:menu">

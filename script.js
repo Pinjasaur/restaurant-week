@@ -1,8 +1,9 @@
+const isLocal = () => window.location.hostname === 'localhost'
 // const url = 'https://corsproxy.io/?' + encodeURIComponent('https://mspmag.com/promotions/restaurantweek')
-const proxy = '/proxy/mspmag.com/'
+const proxy = !isLocal() ? '/proxy/mspmag.com/' : 'https://corsproxy.io/?'
 // const canonical = `https://mspmag.com/promotions/restaurantweek/restaurant-week-${new Date().getFullYear()}/`
 const canonical = `https://mspmag.com/promotions/restaurantweek/Summer%20Restaurant%20Week%202024/`
-const url = canonical.replace(/^https:\/\/mspmag.com\//, '')
+const url = !isLocal() ? canonical.replace(/^https:\/\/mspmag.com\//, '') : encodeURIComponent(canonical)
 const $app = document.getElementById('app')
 const $template = document.getElementById('template')
 
@@ -21,8 +22,9 @@ async function getAPI() {
     const $scripts = Array.from($dom.querySelectorAll('script'))
     const $script = $scripts.filter($script => $script.innerHTML.trim().startsWith('var _mp_require = {')).pop()
     const json = JSON.parse($script.innerHTML.trim().replace(/^var _mp_require =/, '').replace(/;$/, ''))
+    const url = !isLocal() ? json['config']['js/page_roundup_location']['locations_url'].replace(/^https:\/\/mspmag.com\//, '') : json['config']['js/page_roundup_location']['locations_url']
     return Promise.resolve({
-      api: json['config']['js/page_roundup_location']['locations_url'].replace(/^https:\/\/mspmag.com\//, ''),
+      api: url,
       header: {
         title: $title.innerHTML,
         img: {
@@ -81,7 +83,7 @@ function formatRestaurantHTML($html) {
     $a.classList.add('button')
   })
   const menu = Array.from($html.querySelectorAll('a')).find($a => $a.textContent.toLowerCase().trim() === 'menu')
-  return [$html.querySelector('li').innerHTML, menu !== undefined ? menu.href.replace(/^https:\/\/mspmag.com\//, '') : null]
+  return [$html.querySelector('li').innerHTML, menu !== undefined ? (!isLocal() ? menu.href.replace(/^https:\/\/mspmag.com\//, '') : menu.href) : null]
 }
 
 async function getMenu(api) {
