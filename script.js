@@ -125,3 +125,10 @@ function slugify(text) {
     restaurants: await formatRestaurants(restaurants).catch(handleError)
   })
 })();
+
+window.addEventListener('hashchange', (event) => {
+  if (!window.location.hash.endsWith(':menu')) return
+  const $details = document.getElementById(window.location.hash.replace(/^#/, ''))
+  if (!$details) return
+  if (!$details.open) $details.open = true
+})
