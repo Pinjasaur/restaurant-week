@@ -8,7 +8,7 @@ const $app = document.getElementById('app')
 const $template = document.getElementById('template')
 
 function handleError(e) {
-  $app.innerHTML = `<p>Error scraping the API: ${e.toString()} <br><br> Try again or visit the direct link: <a href="${canonical}" target="_blank" rel="noopener noreferrer">${canonical}</a></p>`
+  $app.innerHTML = `<p>Error: ${e.toString()} <br><br> Try again or visit the direct link: <a href="${canonical}" target="_blank" rel="noopener noreferrer">${canonical}</a></p>`
 }
 
 async function getAPI() {
@@ -51,7 +51,7 @@ async function getRestaurants(api) {
 }
 
 async function formatRestaurants(restaurants) {
-  return Promise.all(restaurants.map(async restaurant => {
+  return Promise.all(restaurants.map(async (restaurant, index) => {
     const parser = new DOMParser()
     const $html = parser.parseFromString(restaurant.html, 'text/html');
     const [html, menu_] = formatRestaurantHTML($html)
@@ -60,7 +60,7 @@ async function formatRestaurants(restaurants) {
       ...restaurant,
       html,
       menu,
-      slug: slugify(restaurant.title)
+      slug: `${slugify(restaurant.title)}-${index}`
     }
   }))
 }
@@ -71,9 +71,15 @@ function formatRestaurantHTML($html) {
   $html.querySelectorAll('[itemprop=name]').forEach($el => $el.remove())
   $html.querySelectorAll('img').forEach($img => {
     $img.srcset = ''
-    $img.src = $img.src.replace(/\?.*$/, '')
+    // Only strip the width query param (avoids a HTTP 302)
+    $img.src = $img.src.replace(/&w=.*$/, '')
     $img.removeAttribute('width')
     $img.removeAttribute('height')
+
+    // Attempt to preload the images
+    const img = new Image()
+    img.src = $img.src
+    isLocal() && console.log('Preloading image', img.src)
   })
   $html.querySelectorAll('a[href^=http]').forEach($a => {
     $a.target = '_blank'
@@ -116,14 +122,19 @@ function slugify(text) {
   isLocal() && console.log(api, restaurants)
   $app.innerHTML = Mustache.render($template.innerHTML, {
     header,
-    index: restaurants.map(r => {
+    index: restaurants.map((restaurant, index) => {
       return {
-        title: r.title,
-        slug: slugify(r.title)
+        title: restaurant.title,
+        slug: `${slugify(restaurant.title)}-${index}`
       }
     }),
     restaurants: await formatRestaurants(restaurants).catch(handleError)
   })
+  // Let images load for a bit & then scroll into view if possible
+  setTimeout(() => {
+    if (document.getElementById(window.location.hash.replace(/^#/, '')))
+      document.getElementById(window.location.hash.replace(/^#/, '')).scrollIntoView()
+  }, 500)
 })();
 
 window.addEventListener('hashchange', (event) => {
