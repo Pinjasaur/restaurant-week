@@ -116,6 +116,13 @@ function slugify(text) {
     .replace(/\-\-+/g, '-');  // Replace multiple - with single -
 }
 
+function openMenuByHash() {
+  if (!window.location.hash.endsWith(':menu')) return
+  const $details = document.getElementById(window.location.hash.replace(/^#/, ''))
+  if (!$details) return
+  if (!$details.open) $details.open = true
+}
+
 (async () => {
   const {api, header} = await getAPI().catch(handleError)
   const restaurants = await getRestaurants(api + '?page=1').catch(handleError)
@@ -132,14 +139,11 @@ function slugify(text) {
   })
   // Let images load for a bit & then scroll into view if possible
   setTimeout(() => {
-    if (document.getElementById(window.location.hash.replace(/^#/, '')))
+    if (document.getElementById(window.location.hash.replace(/^#/, ''))) {
       document.getElementById(window.location.hash.replace(/^#/, '')).scrollIntoView()
+      openMenuByHash()
+    }
   }, 500)
 })();
 
-window.addEventListener('hashchange', (event) => {
-  if (!window.location.hash.endsWith(':menu')) return
-  const $details = document.getElementById(window.location.hash.replace(/^#/, ''))
-  if (!$details) return
-  if (!$details.open) $details.open = true
-})
+window.addEventListener('hashchange', openMenuByHash)
