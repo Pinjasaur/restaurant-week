@@ -3,18 +3,18 @@ const isLocal = () => window.location.hostname === 'localhost'
 const proxy = !isLocal() ? '/proxy/mspmag.com/' : 'https://corsproxy.io/?'
 // const canonical = `https://mspmag.com/promotions/restaurantweek/restaurant-week-${new Date().getFullYear()}/`
 const canonical = `https://mspmag.com/promotions/restaurantweek`
-const url = !isLocal() ? canonical.replace(/^https:\/\/mspmag.com\//, '') : encodeURIComponent(canonical)
+const BASE_URL = !isLocal() ? canonical.replace(/^https:\/\/mspmag.com\//, '') : encodeURIComponent(canonical)
 const $app = document.getElementById('app')
 const $template = document.getElementById('template')
 
 function handleError(e) {
-  $app.innerHTML = `<p>Error: ${e.toString()} <br><br> Try again or visit the direct link: <a href="${canonical}" target="_blank" rel="noopener noreferrer">${canonical}</a></p>`
+  $app.innerHTML = `<p>Error: ${e.message.toString()} <br><br> Try again or visit the direct link: <a href="${canonical}" target="_blank" rel="noopener noreferrer">${canonical}</a></p>`
 }
 
 async function getAPI() {
-  const res = await fetch(proxy + url)
-  const html = await res.text()
   try {
+    const res = await fetch(proxy + BASE_URL)
+    const html = await res.text()
     const parser = new DOMParser()
     const $dom = parser.parseFromString(html, 'text/html')
     const $title = $dom.querySelector('#title > h1')
@@ -22,6 +22,11 @@ async function getAPI() {
     const $scripts = Array.from($dom.querySelectorAll('script'))
     const $script = $scripts.filter($script => $script.innerHTML.trim().startsWith('var _mp_require = {')).pop()
     const json = JSON.parse($script.innerHTML.trim().replace(/^var _mp_require =/, '').replace(/;$/, ''))
+    try {
+      json['config']['js/page_roundup_location']['locations_url']
+    } catch (e) {
+      throw new Error("API not found, perhaps there's no current restaurant week.")
+    }
     const url = !isLocal() ? json['config']['js/page_roundup_location']['locations_url'].replace(/^https:\/\/mspmag.com\//, '') : json['config']['js/page_roundup_location']['locations_url']
     return Promise.resolve({
       api: url,
@@ -124,22 +129,26 @@ function openMenuByHash() {
 }
 
 (async () => {
-  const {api, header} = await getAPI().catch(handleError)
-  const restaurants = await getRestaurants(api + '?page=1').catch(handleError)
-  isLocal() && console.log(api, restaurants)
-  $app.innerHTML = Mustache.render($template.innerHTML, {
-    header,
-    index: restaurants.map((restaurant, index) => {
-      return {
-        title: restaurant.title,
-        slug: `${slugify(restaurant.title)}-${index}`
-      }
-    }),
-    restaurants: await formatRestaurants(restaurants).catch(handleError)
-  })
+  try {
+    const {api, header} = await getAPI()
+    const restaurants = await getRestaurants(api + '?page=1')
+    isLocal() && console.log(api, restaurants)
+    $app.innerHTML = Mustache.render($template.innerHTML, {
+      header,
+      index: restaurants.map((restaurant, index) => {
+        return {
+          title: restaurant.title,
+          slug: `${slugify(restaurant.title)}-${index}`
+        }
+      }),
+      restaurants: await formatRestaurants(restaurants)
+    })
+  } catch (e) {
+    handleError(e)
+  }
   // Let images load for a bit & then scroll into view if possible
   setTimeout(() => {
-    if (document.getElementById(window.location.hash.replace(/^#/, ''))) {
+    if (window.location.hash.replace(/^#/, '') && document.getElementById(window.location.hash.replace(/^#/, ''))) {
       document.getElementById(window.location.hash.replace(/^#/, '')).scrollIntoView()
       openMenuByHash()
     }
