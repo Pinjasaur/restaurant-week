@@ -2,7 +2,7 @@ const isLocal = () => window.location.hostname === 'localhost'
 // const url = 'https://corsproxy.io/?' + encodeURIComponent('https://mspmag.com/promotions/restaurantweek')
 const proxy = !isLocal() ? '/proxy/mspmag.com/' : 'https://corsproxy.io/?'
 // const canonical = `https://mspmag.com/promotions/restaurantweek/restaurant-week-${new Date().getFullYear()}/`
-const canonical = `https://mspmag.com/promotions/restaurantweek/Fall%20Restaurant%20Week%202024/`
+const canonical = `https://mspmag.com/promotions/restaurantweek`
 const url = !isLocal() ? canonical.replace(/^https:\/\/mspmag.com\//, '') : encodeURIComponent(canonical)
 const $app = document.getElementById('app')
 const $template = document.getElementById('template')
