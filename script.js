@@ -128,7 +128,16 @@ function openMenuByHash() {
   if (!$details.open) $details.open = true
 }
 
-(async () => {
+function trackHashChange() {
+  isLocal() && console.log('Tracking hashchange', location.pathname + location.search + location.hash)
+  if (window.goatcounter && window.goatcounter.count)
+    window.goatcounter.count({
+      path: 'hashchange-' + location.pathname + location.search + location.hash,
+      event: true
+    })
+}
+
+;(async () => {
   try {
     const {api, header} = await getAPI()
     const restaurants = await getRestaurants(api + '?page=1')
@@ -152,7 +161,14 @@ function openMenuByHash() {
       document.getElementById(window.location.hash.replace(/^#/, '')).scrollIntoView()
       openMenuByHash()
     }
+    // Track initial "pageview"
+    isLocal() && console.log('Tracking initial "pageview"', location.pathname + location.search + location.hash)
+    if (window.goatcounter && window.goatcounter.count)
+      window.goatcounter.count({
+        path: location.pathname + location.search + location.hash,
+      })
   }, 500)
 })();
 
 window.addEventListener('hashchange', openMenuByHash)
+window.addEventListener('hashchange', trackHashChange)
