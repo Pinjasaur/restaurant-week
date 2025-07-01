@@ -17,7 +17,8 @@ async function getAPI() {
   try {
     const parser = new DOMParser()
     const $dom = parser.parseFromString(html, 'text/html')
-    const $title = $dom.querySelector('#title > h1')
+    // const $title = $dom.querySelector('#title > h1')
+    const $title = $dom.querySelector('#main .lead')
     const $img = $dom.querySelector('.mp-cover-img > figure > img')
     const $scripts = Array.from($dom.querySelectorAll('script'))
     const $script = $scripts.filter($script => $script.innerHTML.trim().startsWith('var _mp_require = {')).pop()
@@ -80,6 +81,8 @@ function formatRestaurantHTML($html) {
     $img.src = $img.src.replace(/&w=.*$/, '')
     $img.removeAttribute('width')
     $img.removeAttribute('height')
+    // Seemingly conflicts with Chrome UA stylesheet
+    $img.removeAttribute('sizes')
 
     // Attempt to preload the images
     const img = new Image()
