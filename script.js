@@ -19,7 +19,7 @@ async function getAPI() {
     const $dom = parser.parseFromString(html, 'text/html')
     // const $title = $dom.querySelector('#title > h1')
     const $title = $dom.querySelector('#main .lead')
-    const $img = $dom.querySelector('.mp-cover-img > figure > img')
+    const $img = $dom.querySelectorAll('#content img')[0]
     const $scripts = Array.from($dom.querySelectorAll('script'))
     const $script = $scripts.filter($script => $script.innerHTML.trim().startsWith('var _mp_require = {')).pop()
     const json = JSON.parse($script.innerHTML.trim().replace(/^var _mp_require =/, '').replace(/;$/, ''))
