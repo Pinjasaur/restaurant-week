@@ -32,7 +32,7 @@ async function getAPI() {
     return Promise.resolve({
       api: url,
       header: {
-        title: $title.innerHTML,
+        title: $title.textContent,
         img: {
           src: $img.src.replace(/\?.*$/, ''),
           alt: $img.alt
