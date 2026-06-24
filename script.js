@@ -17,8 +17,8 @@ async function getAPI() {
   try {
     const parser = new DOMParser()
     const $dom = parser.parseFromString(html, 'text/html')
-    // const $title = $dom.querySelector('#title > h1')
-    const $title = $dom.querySelector('#main .lead')
+    const $title = $dom.querySelector('#title > h1')
+    // const $title = $dom.querySelector('#main .lead')
     const $img = $dom.querySelectorAll('#content img')[0]
     // const $img = $dom.querySelector('.mp-cover-img > figure > img')
     const $scripts = Array.from($dom.querySelectorAll('script'))
